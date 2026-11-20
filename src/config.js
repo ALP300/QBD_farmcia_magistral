@@ -24,6 +24,10 @@ export const EMPRESA = {
   instagram: '',
   tiktok: '',
   libroReclamaciones: '', // URL del Libro de Reclamaciones virtual
+  // Textos de la tienda
+  coberturaEnvio: '[ZONAS DE ENVÍO]', // ej. 'Puno, Juliaca y alrededores'
+  mediosPago: '[MEDIOS DE PAGO]', // ej. 'Yape, Plin, transferencia y efectivo'
+  plazoPreparacion: '[PLAZO DE PREPARACIÓN]', // ej. '24 a 48 horas'
 }
 
 // Sedes. Agrega o quita objetos para sumar más sedes.

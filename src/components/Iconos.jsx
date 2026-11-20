@@ -84,6 +84,92 @@ export const IcoCorreo = (p) => (
     <path d="M3.5 7l8.5 6 8.5-6" />
   </svg>
 )
+export const IcoBuscar = (p) => (
+  <svg {...base} {...p}>
+    <circle cx="11" cy="11" r="6.5" />
+    <path d="M20 20l-4.2-4.2" />
+  </svg>
+)
+export const IcoCarrito = (p) => (
+  <svg {...base} {...p}>
+    <path d="M3 4h2.2l2.2 11h10.8l2-8H6.3" />
+    <circle cx="9.5" cy="19.5" r="1.4" />
+    <circle cx="17" cy="19.5" r="1.4" />
+  </svg>
+)
+export const IcoFavorito = ({ lleno, ...p }) => (
+  <svg {...base} fill={lleno ? 'currentColor' : 'none'} {...p}>
+    <path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.3 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z" />
+  </svg>
+)
+export const IcoUsuario = (p) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="8.5" r="3.8" />
+    <path d="M4.5 20c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5" />
+  </svg>
+)
+export const IcoCamion = (p) => (
+  <svg {...base} {...p}>
+    <path d="M2.5 6.5h11v9h-11zM13.5 9.5h4l3 3.2v2.8h-7" />
+    <circle cx="6.5" cy="17.5" r="1.8" />
+    <circle cx="17" cy="17.5" r="1.8" />
+  </svg>
+)
+export const IcoEscudo = (p) => (
+  <svg {...base} {...p}>
+    <path d="M12 3l7.5 3v5.5c0 4.6-3.2 8-7.5 9.5-4.3-1.5-7.5-4.9-7.5-9.5V6z" />
+    <path d="M8.8 12l2.2 2.2 4.2-4.4" />
+  </svg>
+)
+export const IcoTarjeta = (p) => (
+  <svg {...base} {...p}>
+    <rect x="3" y="5.5" width="18" height="13" rx="2" />
+    <path d="M3 10h18M7 15h3" />
+  </svg>
+)
+export const IcoReceta = (p) => (
+  <svg {...base} {...p}>
+    <path d="M6 3h9l3 3v15H6z" />
+    <path d="M9 9h3.5a2 2 0 0 1 0 4H9V8M11.5 13l3.5 4M15 13l-3.5 4" />
+  </svg>
+)
+export const IcoCapsula = (p) => (
+  <svg {...base} {...p}>
+    <rect x="3.5" y="8.5" width="17" height="7" rx="3.5" transform="rotate(-35 12 12)" />
+    <path d="M9.6 8.6l4.8 6.8" />
+  </svg>
+)
+export const IcoRostro = (p) => (
+  <svg {...base} {...p}>
+    <path d="M12 3.5c4 0 6.5 3 6.5 7.5 0 4.6-3 9.5-6.5 9.5S5.5 15.6 5.5 11c0-4.5 2.5-7.5 6.5-7.5z" />
+    <path d="M9.5 10.5h.01M14.5 10.5h.01M10 15c1.2.8 2.8.8 4 0" />
+  </svg>
+)
+export const IcoGota = (p) => (
+  <svg {...base} {...p}>
+    <path d="M12 3.5c3 4 6 7.3 6 10.5a6 6 0 0 1-12 0c0-3.2 3-6.5 6-10.5z" />
+  </svg>
+)
+export const IcoFlecha = ({ dir = 'der', ...p }) => (
+  <svg {...base} {...p} style={{ transform: dir === 'izq' ? 'scaleX(-1)' : undefined }}>
+    <path d="M9 5l7 7-7 7" />
+  </svg>
+)
+export const IcoMas = (p) => (
+  <svg {...base} {...p}>
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+)
+export const IcoMenos = (p) => (
+  <svg {...base} {...p}>
+    <path d="M5 12h14" />
+  </svg>
+)
+export const IcoBasura = (p) => (
+  <svg {...base} {...p}>
+    <path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13" />
+  </svg>
+)
 export const IcoMenu = (p) => (
   <svg {...base} {...p}>
     <path d="M4 7h16M4 12h16M4 17h16" />

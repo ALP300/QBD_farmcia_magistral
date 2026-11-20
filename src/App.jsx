@@ -1,26 +1,40 @@
-import Header from './components/Header.jsx'
-import Hero from './components/Hero.jsx'
-import { FormulaMagistral, Lineas, ComoFunciona, Preguntas } from './components/Secciones.jsx'
-import Sedes from './components/Sedes.jsx'
-import Cotizar from './components/Cotizar.jsx'
-import Footer, { WhatsAppFlotante } from './components/Footer.jsx'
+import { TiendaProvider, useRuta } from './tienda.jsx'
+import Cabecera from './components/Cabecera.jsx'
+import Pie, { WhatsAppFlotante } from './components/Pie.jsx'
+import { PanelCarrito, PaginaCarrito, AvisoAgregado } from './components/Carrito.jsx'
+import Inicio from './paginas/Inicio.jsx'
+import Tienda from './paginas/Tienda.jsx'
+import Detalle from './paginas/Detalle.jsx'
+import { FormulaMagistral, Sedes, Contacto, Favoritos } from './paginas/Informativas.jsx'
+
+function Pagina({ ruta }) {
+  switch (ruta.pagina) {
+    case 'tienda': return <Tienda ruta={ruta} />
+    case 'producto': return <Detalle id={ruta.id} />
+    case 'formula-magistral': return <FormulaMagistral />
+    case 'sedes': return <Sedes />
+    case 'contacto': return <Contacto />
+    case 'favoritos': return <Favoritos />
+    case 'carrito': return <PaginaCarrito />
+    default: return <Inicio />
+  }
+}
 
 export default function App() {
+  const ruta = useRuta()
   return (
-    <>
-      <a href="#contenido" className="saltar">Saltar al contenido</a>
-      <Header />
-      <main id="contenido">
-        <Hero />
-        <FormulaMagistral />
-        <Lineas />
-        <ComoFunciona />
-        <Sedes />
-        <Cotizar />
-        <Preguntas />
+    <TiendaProvider>
+      <a href="#contenido" className="saltar" onClick={(e) => { e.preventDefault(); document.getElementById('contenido')?.focus() }}>
+        Saltar al contenido
+      </a>
+      <Cabecera ruta={ruta} />
+      <main id="contenido" tabIndex={-1}>
+        <Pagina ruta={ruta} />
       </main>
-      <Footer />
+      <Pie />
+      <PanelCarrito />
+      <AvisoAgregado />
       <WhatsAppFlotante />
-    </>
+    </TiendaProvider>
   )
 }
