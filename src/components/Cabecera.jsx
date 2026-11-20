@@ -1,141 +1,116 @@
 import { useState, useEffect } from 'react'
-import { EMPRESA, esMarcador } from '../config.js'
 import { CATEGORIAS, soles } from '../data/catalogo.js'
 import { useTienda, ir } from '../tienda.jsx'
 import { ICONOS_CATEGORIA } from './Producto.jsx'
-import { IcoBuscar, IcoCarrito, IcoFavorito, IcoMenu, IcoCerrar, IcoWhatsApp, IcoCamion, IcoFlecha } from './Iconos.jsx'
+import { IcoBuscar, IcoCarrito, IcoFavorito, IcoMenu, IcoCerrar, IcoMas, IcoReceta } from './Iconos.jsx'
 
-export function Logo({ claro = false }) {
+/* Logo a color (fondo claro) o en blanco y verde (sobre la cabecera azul) */
+export function Logo({ blanco = false }) {
   return (
-    <a href="#/" className={`logo ${claro ? 'logo-claro' : ''}`} aria-label="QBD Farmacia Magistral, ir al inicio">
-      <img src="img/logo-qbd.png" alt="QBD Farmacia Magistral" width="236" height="89" />
+    <a href="#/" className="logo" aria-label="QBD Farmacia Magistral, ir al inicio">
+      <img src={blanco ? 'img/logo-qbd-blanco.png' : 'img/logo-qbd.png'} alt="QBD Farmacia Magistral" width="236" height="89" />
     </a>
   )
 }
 
-const MENU = [
-  ['#/', 'Inicio', 'inicio'],
-  ['#/tienda', 'Tienda', 'tienda'],
-  ['#/formula-magistral', 'Fórmula magistral', 'formula-magistral'],
-  ['#/tienda?ofertas=1', 'Ofertas', 'ofertas'],
-  ['#/sedes', 'Sedes', 'sedes'],
-  ['#/contacto', 'Contacto', 'contacto'],
-]
+const IcoBolsa = (p) => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...p}>
+    <path d="M5 9h14l-1.2 10.2a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3z" />
+    <path d="M9 9V7a3 3 0 0 1 6 0v2M9.5 13v4M14.5 13v4" />
+  </svg>
+)
+
+const enlaceCategoria = (c) => (c.id === 'formulas' ? '#/formula-magistral' : `#/tienda?cat=${c.id}`)
 
 export default function Cabecera({ ruta }) {
   const { cantidad, subtotal, favoritos, setCarritoAbierto } = useTienda()
   const [q, setQ] = useState(ruta.query.q ?? '')
-  const [cat, setCat] = useState(ruta.query.cat ?? '')
   const [menu, setMenu] = useState(false)
-  const [catAbierto, setCatAbierto] = useState(false)
 
   useEffect(() => {
     setMenu(false)
-    setCatAbierto(false)
     setCarritoAbierto(false)
-  }, [setCarritoAbierto,ruta.pagina, ruta.id, ruta.query.cat, ruta.query.q])
+  }, [setCarritoAbierto, ruta.pagina, ruta.id, ruta.query.cat, ruta.query.q])
 
   const buscar = (e) => {
     e.preventDefault()
-    const p = new URLSearchParams()
-    if (q.trim()) p.set('q', q.trim())
-    if (cat) p.set('cat', cat)
-    ir(`/tienda${p.toString() ? `?${p}` : ''}`)
+    ir(q.trim() ? `/tienda?q=${encodeURIComponent(q.trim())}` : '/tienda')
   }
 
-  const activo = (clave) =>
-    clave === 'ofertas' ? ruta.pagina === 'tienda' && ruta.query.ofertas : clave === ruta.pagina && !(clave === 'tienda' && ruta.query.ofertas)
+  const enTienda = ruta.pagina === 'tienda' || ruta.pagina === 'producto'
 
   return (
     <header className="cabecera">
-      <div className="barra-sup">
-        <div className="contenedor barra-sup-fila">
-          <span className="barra-sup-envio">
-            <IcoCamion width={16} height={16} /> Envíos a{' '}
-            <span className={esMarcador(EMPRESA.coberturaEnvio) ? 'marcador marcador-osc' : ''}>{EMPRESA.coberturaEnvio}</span>
-          </span>
-          <span className="barra-sup-der">
-            <span>
-              <IcoWhatsApp width={15} height={15} /> WhatsApp:{' '}
-              <span className={esMarcador(EMPRESA.whatsappVisible) ? 'marcador marcador-osc' : ''}>{EMPRESA.whatsappVisible}</span>
-            </span>
-            <a href="#/sedes">Nuestras sedes</a>
-          </span>
-        </div>
-      </div>
+      <div className="contenedor cabecera-grid">
+        <button className="icono-btn icono-claro solo-movil menu-movil" type="button" aria-label="Abrir menú" onClick={() => setMenu(true)}>
+          <IcoMenu />
+        </button>
 
-      <div className="cabecera-principal">
-        <div className="contenedor cabecera-fila">
-          <button className="icono-btn solo-movil" type="button" aria-label="Abrir menú" onClick={() => setMenu(true)}>
-            <IcoMenu />
+        <div className="cabecera-logo"><Logo blanco /></div>
+
+        <form className="buscador" role="search" onSubmit={buscar}>
+          <label htmlFor="buscar-q" className="sr-only">Buscar productos</label>
+          <input id="buscar-q" type="search" placeholder="Buscar…" value={q} onChange={(e) => setQ(e.target.value)} />
+          <button type="submit" aria-label="Buscar">
+            <IcoBuscar width={20} height={20} />
           </button>
-          <Logo />
-          <form className="buscador" role="search" onSubmit={buscar}>
-            <label htmlFor="buscar-cat" className="sr-only">Categoría</label>
-            <select id="buscar-cat" value={cat} onChange={(e) => setCat(e.target.value)}>
-              <option value="">Todas</option>
-              {CATEGORIAS.map((c) => (
-                <option key={c.id} value={c.id}>{c.corto}</option>
-              ))}
-            </select>
-            <label htmlFor="buscar-q" className="sr-only">Buscar productos</label>
-            <input id="buscar-q" type="search" placeholder="Buscar productos, marcas o fórmulas…" value={q} onChange={(e) => setQ(e.target.value)} />
-            <button type="submit" aria-label="Buscar">
-              <IcoBuscar width={20} height={20} />
-            </button>
-          </form>
-          <div className="cabecera-acciones">
-            <a href="#/favoritos" className="icono-btn" aria-label={`Favoritos (${favoritos.length})`}>
-              <IcoFavorito />
-              {favoritos.length > 0 && <span className="contador">{favoritos.length}</span>}
-            </a>
-            <button type="button" className="carrito-btn" onClick={() => setCarritoAbierto(true)} aria-label={`Carrito, ${cantidad} productos`}>
-              <span className="icono-btn">
-                <IcoCarrito />
-                <span className="contador contador-verde">{cantidad}</span>
-              </span>
-              <span className="carrito-btn-texto">
-                <small>Mi carrito</small>
-                <strong>{soles(subtotal)}</strong>
-              </span>
-            </button>
-          </div>
-        </div>
-      </div>
+        </form>
 
-      <nav className="nav-principal" aria-label="Principal">
-        <div className="contenedor nav-fila">
-          <div className="cat-menu" onMouseLeave={() => setCatAbierto(false)}>
-            <button type="button" className="cat-boton" aria-expanded={catAbierto} onClick={() => setCatAbierto((v) => !v)} onMouseEnter={() => setCatAbierto(true)}>
-              <IcoMenu width={20} height={20} /> Categorías
-            </button>
-            {catAbierto && (
-              <ul className="cat-desplegable">
+        <div className="cabecera-acciones">
+          <a href="#/formula-magistral" className="accion-texto">
+            <IcoReceta width={20} height={20} className="solo-movil" />
+            <span>Cotizar receta</span>
+          </a>
+          <a href="#/favoritos" className="icono-btn icono-claro" aria-label={`Favoritos (${favoritos.length})`}>
+            <IcoFavorito width={26} height={26} />
+            {favoritos.length > 0 && <span className="contador">{favoritos.length}</span>}
+          </a>
+          <button type="button" className="carrito-btn" onClick={() => setCarritoAbierto(true)} aria-label={`Carrito, ${cantidad} productos, ${soles(subtotal)}`}>
+            <span className="icono-btn icono-claro">
+              <IcoCarrito width={26} height={26} />
+              <span className="contador">{cantidad}</span>
+            </span>
+            <strong className="carrito-total">{soles(subtotal)}</strong>
+          </button>
+          <a href="#/tienda" className="boton-tienda">
+            <span className="boton-tienda-circulo"><IcoBolsa width={22} height={22} /></span>
+            <span className="boton-tienda-texto">Tienda</span>
+          </a>
+        </div>
+
+        <nav className="nav-principal" aria-label="Principal">
+          <ul>
+            <li className="nav-desplegable">
+              <a href="#/tienda" className={enTienda && !ruta.query.ofertas ? 'activo' : ''}>
+                Tienda <IcoMas width={14} height={14} className="nav-mas" />
+              </a>
+              <ul className="submenu">
                 {CATEGORIAS.map((c) => {
                   const I = ICONOS_CATEGORIA[c.icono]
                   return (
                     <li key={c.id}>
-                      <a href={c.id === 'formulas' ? '#/formula-magistral' : `#/tienda?cat=${c.id}`}>
-                        <I width={20} height={20} /> {c.nombre} <IcoFlecha width={14} height={14} className="cat-flecha" />
-                      </a>
+                      <a href={enlaceCategoria(c)}><I width={18} height={18} /> {c.nombre}</a>
                     </li>
                   )
                 })}
               </ul>
-            )}
-          </div>
-          <ul className="nav-enlaces">
-            {MENU.map(([href, texto, clave]) => (
-              <li key={clave}>
-                <a href={href} className={activo(clave) ? 'activo' : ''}>{texto}</a>
-              </li>
-            ))}
+            </li>
+            <li className="nav-desplegable">
+              <a href="#/formula-magistral" className={ruta.pagina === 'formula-magistral' ? 'activo' : ''}>
+                Fórmula magistral <IcoMas width={14} height={14} className="nav-mas" />
+              </a>
+              <ul className="submenu">
+                <li><a href="#/formula-magistral">¿Qué es una fórmula magistral?</a></li>
+                <li><a href="#/formula-magistral">Cotizar mi receta</a></li>
+                <li><a href="#/tienda?cat=veterinaria">Veterinaria</a></li>
+              </ul>
+            </li>
+            <li><a href="#/tienda?ofertas=1" className={ruta.query.ofertas ? 'activo' : ''}>Ofertas</a></li>
+            <li><a href="#/sedes" className={ruta.pagina === 'sedes' ? 'activo' : ''}>Sedes</a></li>
+            <li><a href="#/contacto" className={ruta.pagina === 'contacto' ? 'activo' : ''}>Contacto</a></li>
           </ul>
-          <a href="#/formula-magistral" className="nav-cta">
-            ¿Tienes una receta? <strong>Cotízala aquí</strong>
-          </a>
-        </div>
-      </nav>
+        </nav>
+      </div>
 
       {/* Menú lateral en celular */}
       <div className={`cajon-fondo ${menu ? 'visible' : ''}`} onClick={() => setMenu(false)} aria-hidden="true" />
@@ -147,20 +122,19 @@ export default function Cabecera({ ruta }) {
           </button>
         </div>
         <ul className="cajon-lista">
-          {MENU.map(([href, texto, clave]) => (
-            <li key={clave}><a href={href}>{texto}</a></li>
-          ))}
+          <li><a href="#/">Inicio</a></li>
+          <li><a href="#/tienda">Tienda</a></li>
+          <li><a href="#/formula-magistral">Fórmula magistral</a></li>
+          <li><a href="#/tienda?ofertas=1">Ofertas</a></li>
+          <li><a href="#/sedes">Sedes</a></li>
+          <li><a href="#/contacto">Contacto</a></li>
         </ul>
         <p className="cajon-titulo">Categorías</p>
         <ul className="cajon-lista cajon-cats">
           {CATEGORIAS.map((c) => {
             const I = ICONOS_CATEGORIA[c.icono]
             return (
-              <li key={c.id}>
-                <a href={c.id === 'formulas' ? '#/formula-magistral' : `#/tienda?cat=${c.id}`}>
-                  <I width={20} height={20} /> {c.nombre}
-                </a>
-              </li>
+              <li key={c.id}><a href={enlaceCategoria(c)}><I width={20} height={20} /> {c.nombre}</a></li>
             )
           })}
         </ul>
